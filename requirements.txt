@@ -1,0 +1,3 @@
+pyzbar
+PIL
+qrcode
