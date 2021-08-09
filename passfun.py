@@ -1,5 +1,10 @@
 #! /usr/bin/env python3
 
+# Copyright (c) 2021, juju2013@github
+# All rights reserved
+# This file is under BSD 2-Clause License, see LICENSE file
+
+
 import os,sys, random, io
 import argparse
 from pyzbar import pyzbar
