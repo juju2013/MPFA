@@ -13,7 +13,7 @@ Pour un Ubuntu 18.04 de base :
   
 ## Générer votre cochon
 
- *  Scanner votre attestation de vaccination et découper votre certificat Covid (le premier Qrcode du huat dans l'exemple ci-dessous), 
+ *  Scanner votre attestation de vaccination et découper votre certificat Covid (le premier Qrcode du haut dans l'exemple ci-dessous), 
  nommer le `monpass.png` et déposer le dans MPFA-master.
  
  <img src="https://www.ameli.fr/sites/default/files/thumbnails/image/attestation-vaccination-format-europeen-exemple.jpg" height=600 />
@@ -23,3 +23,5 @@ Lancer simplement
     ./passfun.py monpass.png cochon.jpg funpass.png --pos 50 --trans 80
 
 Et voilà !!
+
+ <img src="funpass.png" height=400 />
