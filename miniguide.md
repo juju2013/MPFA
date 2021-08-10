@@ -4,12 +4,12 @@
 
 Pour un Ubuntu 18.04 de base :
 
-  sudo apt update
-  sudo apt install wget unzip python3-pip zbar-tools
-  pip3 install pillow pyzbar qrcode
-  wget https://github.com/juju2013/MPFA/archive/refs/heads/master.zip
-  unzip master.zip
-  cd MPFA-master/
+    sudo apt update
+    sudo apt install wget unzip python3-pip zbar-tools
+    pip3 install pillow pyzbar qrcode
+    wget https://github.com/juju2013/MPFA/archive/refs/heads/master.zip
+    unzip master.zip
+    cd MPFA-master/
   
 ## Générer votre cochon
 
@@ -20,6 +20,6 @@ Pour un Ubuntu 18.04 de base :
 
 Lancer simplement 
 
-  ./passfun.py monpass.png cochon.jpg funpass.png --pos 50 --trans 80
+    ./passfun.py monpass.png cochon.jpg funpass.png --pos 50 --trans 80
 
 Et voilà !!
