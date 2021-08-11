@@ -3,7 +3,7 @@ Customize your Pass Sanitaire (French name for EU digital Covide19 Certificate) 
 
 ## Usage
 
-    usage: passfun.py [-h] [--pos POS] [--trans [TRANS]] [--test [TEST]] inputfile backgroundfile outputfile
+    usage: passfun.py [-h] [--scale [SCALE]] [--pos [POS]] [--trans [TRANS]] [--test [TEST]] inputfile backgroundfile outputfile
 
     Make your EU digital COVID certificate fun again.
 
@@ -14,7 +14,8 @@ Customize your Pass Sanitaire (French name for EU digital Covide19 Certificate) 
 
     optional arguments:
       -h, --help       show this help message and exit
-      --pos POS        Generated qrcode horizontal position, 0=left, 100=right
+      --scale [SCALE]  Scale of the target qrcode in percent, default=100
+      --pos [POS]      Generated qrcode horizontal position, 0=left, 100=right
       --trans [TRANS]  Background transparency, 0=white, 100=original image
       --test [TEST]    Download random test data from dgc-testdata instead of inputfile
 
