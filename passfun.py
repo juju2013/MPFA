@@ -25,7 +25,6 @@ class EUDCC:
     self.data=None
     self.img = None
     self.mask1 = None
-    self.mask2 = None
     self.mask3 = None
     if inf:
       self.ReadImage(inf)
@@ -48,40 +47,36 @@ class EUDCC:
     im = Image.open(io.BytesIO(ib))
     self.Decode(im)
     
-  def NewQRCode(self):
+  def NewQRCode(self, scale=100):
     qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H, border=1)
     qr.add_data(self.data)
     qr.make(fit=True)
     im = qr.make_image(back_color="transparent")
     # FIXME :  bug from PIL ??? erroneous width without convert
-    self.img = maxImage(im.convert("RGBA"))
-
+    im = maxImage(im.convert("RGBA"))
+    si = (int(im.size[0]*scale/100), int(im.size[1]*scale/100))
+    self.img = im.resize(si)
+    
   def Debug(self):
     self.img.save("dbug-qrcode.png")
     self.mask1.save("dbug-mask1.png")
-    self.mask2.save("dbug-mask2.png")
     self.mask3.save("dbug-mask3.png")
     
   # compute masks with size (x,y) and qrcode at pos% from left
   # mask1 is only with qrcode
-  # mask2 is mask1 + border
   # mask3 is fade mask
   def SetMasks(self, x, y, pos=0, trans=0):
     fg=(0,0,0)
     fa=int(trans*255/100)
     im = Image.new("RGBA",(x,y))
     xs = int((x-self.img.width)/100*pos)
-    im.paste(self.img,(xs,0))
+    ys = int((y-self.img.height)/2)
+    im.paste(self.img,(xs,ys))
     self.mask1=im.copy()
-
-    dr = ImageDraw.Draw(im)
-    dr.rectangle([0,0,xs,y], fill=fg)
-    dr.rectangle([self.img.width+xs,0,x,y], fill=fg)
-    self.mask2=im.copy()
 
     self.mask3=self.mask1.copy().convert("L")
     dr = ImageDraw.Draw(self.mask3)
-    dr.rectangle([xs,0,xs+self.img.width,y], fill=fa)
+    dr.rectangle([xs,ys,xs+self.img.width,ys+self.img.height], fill=fa)
     
 class DstImage:
   def __init__(self, inf=None):
@@ -121,6 +116,7 @@ def main():
   apar.add_argument("inputfile", help="The original qrcode")
   apar.add_argument("backgroundfile", help="Background image, can start with 'http'")
   apar.add_argument("outputfile", help="The new qrcode")
+  apar.add_argument("--scale", const=100, default=100, nargs='?', type=int, help="Scale of the target qrcode in percent, default=100")
   apar.add_argument("--pos", const=50, default=50, nargs='?', type=int, help="Generated qrcode horizontal position, 0=left, 100=right")
   apar.add_argument("--trans", type=int, const=80, default=80, nargs='?', help="Background transparency, 0=white, 100=original image")
   apar.add_argument("--test", default=False, nargs='?', const=True, help="Download random test data from dgc-testdata instead of inputfile")
@@ -132,7 +128,7 @@ def main():
     cert.TestData()
   else:
     cert.ReadImage(args.inputfile)
-  cert.NewQRCode()
+  cert.NewQRCode(scale=args.scale)
   
   bimg = DstImage(args.backgroundfile)
   if bimg.img.width < cert.img.width:

@@ -22,5 +22,5 @@ test_data=[
 i=0
 for u in test_data:
   i+=1
-  sp.run(["./passfun.py", "null.png", u, "%s.png"%i, "--pos", "50", "--trans", "80", "--test"])
+  sp.run(["./passfun.py", "null.png", u, "%s.png"%i, "--scale", "90", "--pos", "50", "--trans", "85", "--test"])
 
