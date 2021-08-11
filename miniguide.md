@@ -20,7 +20,7 @@ Pour un Ubuntu 18.04 de base :
 
 Lancer simplement 
 
-    ./passfun.py monpass.png cochon.jpg funpass.png --pos 50 --trans 80
+    ./passfun.py monpass.png cochon.jpg funpass.png --pos 50 --trans 80 --scale 90
 
 Et voilà !!
 
