@@ -19,7 +19,9 @@ ccardx=3 # in inch
 DPI=600 # print DPI
 MAXY = int(ccardy * DPI)
 MAXX = int(ccardx * DPI)
-
+LTHREASHOLD = int(255*90/100) # for light mode, all pixel brighter than this will turn to black
+testdataroot="https://raw.githubusercontent.com/eu-digital-green-certificates/dgc-testdata/52496b2fa85a9fdb4d5a32ac4abc8c639fb75b20/CH/png/"
+              
 class EUDCC:
   def __init__(self, inf=None):
     self.data=None
@@ -89,7 +91,7 @@ class DstImage:
   
   def ReadImage(self, inf):
     with Image.open(inf) as im:
-      self.img = maxImage(im)
+      self.img = maxImage(im).convert("RGBA")
 
   def ReadImageUrl(self, url):
     r = request.Request(
@@ -119,6 +121,7 @@ def main():
   apar.add_argument("--scale", const=100, default=100, nargs='?', type=int, help="Scale of the target qrcode in percent, default=100")
   apar.add_argument("--pos", const=50, default=50, nargs='?', type=int, help="Generated qrcode horizontal position, 0=left, 100=right")
   apar.add_argument("--trans", type=int, const=80, default=80, nargs='?', help="Background transparency, 0=white, 100=original image")
+  apar.add_argument("--lmode", default=False, nargs='?', const=True, help="Light mode, background image is light")
   apar.add_argument("--test", default=False, nargs='?', const=True, help="Download random test data from dgc-testdata instead of inputfile")
   apar.add_argument("--debug", default=False, nargs='?', const=True, help="Debug")
 
@@ -126,7 +129,7 @@ def main():
 
   cert = EUDCC()
   if args.test:
-    cert.TestData()
+    cert.TestData(testdataroot)
   else:
     cert.ReadImage(args.inputfile)
   cert.NewQRCode(scale=args.scale)
@@ -149,7 +152,20 @@ def main():
   if bimg.img.mode=="RGBA":
     bg = Image.new("RGBA", im.size, (0,0,0))
     bimg.img=Image.alpha_composite(bg, bimg.img)
-  # save the finale work
+    
+  # inverse fill for light mode
+  if args.lmode :
+    ip = bimg.img.load()
+    iq = cert.mask1.load()
+    w,h =bimg.img.size
+    for x in range(w):
+      for y in range(h):
+        #if ip[x,y] > (LTHREASHOLD,)*3:
+        if iq[x,y][3] > 0: # black pixel in qrcode
+          if ip[x,y][0]+ip[x,y][1]+ip[x,y][2] > LTHREASHOLD * 3 : #light pixel in background
+            ip[x,y] = iq[x,y]
+
+  # save the final image
   bimg.img.save(args.outputfile)
   
 if __name__ == "__main__":
