@@ -120,6 +120,7 @@ def main():
   apar.add_argument("--pos", const=50, default=50, nargs='?', type=int, help="Generated qrcode horizontal position, 0=left, 100=right")
   apar.add_argument("--trans", type=int, const=80, default=80, nargs='?', help="Background transparency, 0=white, 100=original image")
   apar.add_argument("--test", default=False, nargs='?', const=True, help="Download random test data from dgc-testdata instead of inputfile")
+  apar.add_argument("--debug", default=False, nargs='?', const=True, help="Debug")
 
   args = apar.parse_args()
 
@@ -135,7 +136,8 @@ def main():
     raise Exception("Background image is smaller then QRcode")
   # place qrcode
   cert.SetMasks(bimg.img.width, bimg.img.height, args.pos, args.trans)
-  #cert.Debug()
+  if args.debug :
+    cert.Debug()
 
   im = bimg.img.copy()
   # use mask3 to faded background
