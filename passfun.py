@@ -49,8 +49,14 @@ class EUDCC:
     im = Image.open(io.BytesIO(ib))
     self.Decode(im)
     
-  def NewQRCode(self, scale=100):
-    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H, border=1)
+  def NewQRCode(self, scale=100, qrcode_correction="H"):
+    error_correction = {
+      "L": qrcode.constants.ERROR_CORRECT_L,
+      "M": qrcode.constants.ERROR_CORRECT_M,
+      "Q": qrcode.constants.ERROR_CORRECT_Q,
+      "H": qrcode.constants.ERROR_CORRECT_H,
+    }[qrcode_correction]
+    qr = qrcode.QRCode(error_correction=error_correction, border=1)
     qr.add_data(self.data)
     qr.make(fit=True)
     im = qr.make_image(back_color="transparent")
@@ -122,6 +128,7 @@ def main():
   apar.add_argument("--pos", const=50, default=50, nargs='?', type=int, help="Generated qrcode horizontal position, 0=left, 100=right")
   apar.add_argument("--trans", type=int, const=80, default=80, nargs='?', help="Background transparency, 0=white, 100=original image")
   apar.add_argument("--lmode", default=False, nargs='?', const=True, help="Light mode, background image is light")
+  apar.add_argument("--qrcode-correction", choices=["L", "M", "Q", "H"], default="H", help="The error correction value of the QR code (default: H)")
   apar.add_argument("--test", default=False, nargs='?', const=True, help="Download random test data from dgc-testdata instead of inputfile")
   apar.add_argument("--debug", default=False, nargs='?', const=True, help="Debug")
 
@@ -132,7 +139,7 @@ def main():
     cert.TestData(testdataroot)
   else:
     cert.ReadImage(args.inputfile)
-  cert.NewQRCode(scale=args.scale)
+  cert.NewQRCode(scale=args.scale, qrcode_correction=args.qrcode_correction)
   
   bimg = DstImage(args.backgroundfile)
   if bimg.img.width < cert.img.width:
