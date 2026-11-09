@@ -45,7 +45,7 @@ class EUDCC:
   def TestData(self, uri="https://github.com/eu-digital-green-certificates/dgc-testdata/raw/main/CH/png/", tf=15):
     random.seed(str(datetime.now()))
     n = random.randint(1, tf)
-    ib = request.urlopen("%s%s.png"%(uri, n)).read()
+    ib = request.urlopen("%s%s.png"%(uri, n), timeout=30).read()
     im = Image.open(io.BytesIO(ib))
     self.Decode(im)
     
@@ -107,7 +107,7 @@ class DstImage:
         'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:85.0) Gecko/20100101 Firefox/85.0'
       }
     )
-    ib = request.urlopen(r).read()
+    ib = request.urlopen(r, timeout=30).read()
     im = Image.open(io.BytesIO(ib))
     self.img = maxImage(im)
 
